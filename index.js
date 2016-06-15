@@ -81,7 +81,7 @@ router.route('/invoices/:invoiceid')
 	});
 
 router.route('/invoicesdelete/:invoiceid')
-	.get(function (req, res){
+	.delete(function (req, res){
 		Invoices.forge({invoiceid:req.params.invoiceid}).fetch({require: true})
 			.then(function(i) {
 				i.where(i.get('invoiceid')==req.params.invoiceid).destroy()	
