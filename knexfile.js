@@ -1,5 +1,8 @@
-module.exports = {
+'use strict'
 
+var dotenv = require('dotenv');
+dotenv.config();
+module.exports = {
   development: {
     client: 'postgresql',
     connection: {
