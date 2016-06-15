@@ -17,7 +17,7 @@ var	port = process.env.APP_PORT;
 var bodyParser = require('body-parser')
 app.use(bodyParser.json);
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
+	extended: true
 }));
 
 var server = app.listen(port, function(){
@@ -44,19 +44,18 @@ global.Invoice = bookshelf.Model.extend({
 router.route('/invoices')
 	.post(function (req, res){
 		Invoice.forge({req}).save().then(function(model) {
-    	knex('user').insert({amount: req.body.email, callback: req.body.callback, created_at: knex.raw('now()'), updated_at: knex.raw('now()')})
-     	.then(function(ret){
-        	res.json({ success: true, message: 'ok'/*,ret:ret*/});
-    	});
-      		// console.log(req);
-			// res.json(req);
+    		knex('user').insert({amount: req.body.email, callback: req.body.callback, created_at: knex.raw('now()'), updated_at: knex.raw('now()')})
+     		.then(function(ret){
+        		res.json({ success: true, message: 'ok'});
+    		});
 		});
 	});
 
 
 router.route('/invoices/:id')
 	.get(function (req, res){
-		Invoice.forge({id:req.params.id}).fetch()
+		Invoice.forge({id:req.params.id})
+		.fetch()
 			.then(function(i) {
 				if (!i) {
 					console.log('User with id: ', req.params.id, ' not found!');
@@ -98,4 +97,4 @@ router.route('/invoices/:id')
 	    .then(function() {
     		res.send("Ok");
     	})
-	});
+    });
