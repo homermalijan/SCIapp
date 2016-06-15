@@ -33,8 +33,10 @@ var Invoices = bookshelf.Model.extend({
 
 router.route('/invoices')
 	.post(function (req, res){
-		
-		req.save(null, {method: 'insert'});
+		Invoices.forge({req}).save().then(function(model) {
+  		console.log(req);
+			res.json(req);
+		});
 	});
 
 
@@ -44,10 +46,9 @@ router.route('/invoices/:invoiceid')
 			.then(function(i) {
 				if (!i) {
 					console.log('User with id: ', req.params.invoiceid, ' not found!');
+					res.send('Cannot find invoice');
 				}	else {
-					res.send('ID: ' + i.get('invoiceid') + ' Amount: ' + i.get('amount') +
-					' Callback: '+ i.get('callback') + ' Created on: '+ i.get('created_at') +
-					' Last update on: ' + i.get('updated_at'));
+					res.json(i);
 				}
 			})
 			.catch(function(res) {
