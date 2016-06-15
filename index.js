@@ -7,7 +7,14 @@ var express = require('express');
 var	lodash = require('lodash');
 var	app = express();
 var	router = express.Router();
+app.use(router);
 var	port = process.env.APP_PORT;
+
+var bodyParser = require('body-parser')
+app.use(bodyParser.json);
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 var server = app.listen(port, function(){
 	console.log('Listening to %s', port);
@@ -33,9 +40,15 @@ var Invoices = bookshelf.Model.extend({
 
 router.route('/invoices')
 	.post(function (req, res){
-			res.send("meow");
+		Invoices.forge({req}).save().then(function(model) {
+      knex('user').insert({amount: req.body.email, callback: req.body.callback, created_at: knex.raw('now()'), updated_at: knex.raw('now()')})
+      .then(function(ret){
+          res.json({ success: true, message: 'ok'/*,ret:ret*/});
+      });
 
-
+      // console.log(req);
+			// res.json(req);
+		});
 	});
 
 
@@ -45,10 +58,9 @@ router.route('/invoices/:invoiceid')
 			.then(function(i) {
 				if (!i) {
 					console.log('User with id: ', req.params.invoiceid, ' not found!');
+					res.send('Cannot find invoice');
 				}	else {
-					res.send('ID: ' + i.get('invoiceid') + ' Amount: ' + i.get('amount') +
-					' Callback: '+ i.get('callback') + ' Created on: '+ i.get('created_at') +
-					' Last update on: ' + i.get('updated_at'));
+					res.json(i);
 				}
 			})
 			.catch(function(res) {
@@ -57,14 +69,13 @@ router.route('/invoices/:invoiceid')
 	})
 
 	.put(function (req, res){
-		Invoices.forge({id:req.params.invoiceid}).fetch({require: true})
+		Invoices.forge({id:req.params.invoiceid}).fetch()
 			.then(function(i) {
 				if (!i) {
 					console.log('User with id: ', id, ' not found!');
 				} else {
 					Invoice.save({
-						
-					})				
+					})
 				}
 			})
 	});
@@ -73,9 +84,8 @@ router.route('/invoicesdelete/:invoiceid')
 	.get(function (req, res){
 		Invoices.forge({invoiceid:req.params.invoiceid}).fetch({require: true})
 			.then(function(i) {
-			
 				i.where(i.get('invoiceid')==req.params.invoiceid).destroy()	
-				console.log('!done!', i.get('invoiceid'), '+', req.params.invoiceid);
+				console.log('Successfully delete invoice with id: ', i.get('invoiceid'));
 		})
 			.catch(function(res) {
 				console.log('Error encountered!');
@@ -83,4 +93,4 @@ router.route('/invoicesdelete/:invoiceid')
 	});
 
 
-app.use(router);
+
