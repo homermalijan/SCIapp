@@ -1,6 +1,6 @@
 module.exports = {
 
-  production: {
+  development: {
     client: 'postgresql',
     connection: {
       database: process.env.APP_DATABASE,
@@ -12,7 +12,7 @@ module.exports = {
       max: 10
     },
     migrations: {
-      tableName: 'invoices'
+      tableName: 'migrations'
     }
   }
 

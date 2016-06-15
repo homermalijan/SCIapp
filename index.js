@@ -1,18 +1,19 @@
 'use strict'
 
-require('dotenv').config();
+var dotenv = require('dotenv');
+dotenv.config();
+var db = require('./db');
+var express = require('express');
+var	lodash = require('lodash');
+var	app = express();
+var	router = express.Router();
+var	port = process.env.APP_PORT;
 
-var express = require('express'),
-		lodash = require('lodash'),
-		app = express(),
-		router = express.Router(),
-		port = process.env.APPT_PORT || 8081;
+var server = app.listen(port, function(){
+	console.log('Listening to %s', port);
+});
 
-app.listen(port);  
-
-console.log("Listening on port: ", port);  
-
-var knex = require('knex')({  
+var knex = require('knex')({
     client: 'postgresql',
     connection: {
       database: process.env.APP_DATABASE,
@@ -22,61 +23,61 @@ var knex = require('knex')({
     }
 });
 
-var bookshelf = require('bookshelf')(knex);  
+var bookshelf = require('bookshelf')(knex);
 
-var Invoices = bookshelf.Collection.extend({
-	model: Invoice
+var Invoices = bookshelf.Model.extend({
+	tableName: 'invoices'
 });
+
 
 
 router.route('/invoices')
 	.post(function (req, res){
 		
-	
-	
-
+		req.save(null, {method: 'insert'});
 	});
 
 
 router.route('/invoices/:invoiceid')
 	.get(function (req, res){
-		Invoice.forge({id:req.params.invoiceid}).fetch()
+		Invoices.forge({invoiceid:req.params.invoiceid}).fetch()
 			.then(function(i) {
 				if (!i) {
-					console.log('User with id: ', id, ' not found!');
-					res.status(404);			
+					console.log('User with id: ', req.params.invoiceid, ' not found!');
 				}	else {
-					console.log('ID: ', i.get('id'), ' Amount: ', i.get('amount'), 
-					' Callback: ', i.get('callback'), ' Created on: ', i.get('created_at'),
-					' Last update on: ', i.get('updated_at'));
+					res.send('ID: ' + i.get('invoiceid') + ' Amount: ' + i.get('amount') +
+					' Callback: '+ i.get('callback') + ' Created on: '+ i.get('created_at') +
+					' Last update on: ' + i.get('updated_at'));
 				}
 			})
-			.catch(function(err)) {
+			.catch(function(res) {
 				console.log('Error encountered!');
-				res.status(500);			
-			}
+			})
 	})
 
 	.put(function (req, res){
+		Invoices.forge({id:req.params.invoiceid}).fetch()
+			.then(function(i) {
+				if (!i) {
+					console.log('User with id: ', id, ' not found!');
+				} else {
+					Invoice.save({
 
-	})
-	
-	.delete(function (req, res){
-
+					})
+				}
+			})
 	});
-	
+
+router.route('/invoicesdelete/:invoiceid')
+	.get(function (req, res){
+		Invoices.forge({invoiceid:req.params.invoiceid}).destroy()
+			.then(function(i) {
+
+			})
+			.catch(function(res) {
+				console.log('Error encountered!');
+			})
+	});
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.use(router);
