@@ -1,6 +1,7 @@
 'use strict'
 
 var dotenv = require('dotenv');
+
 dotenv.config();
 var db = require('./db');
 var express = require('express');
@@ -8,6 +9,11 @@ var	lodash = require('lodash');
 var	app = express();
 var	router = express.Router();
 var	port = process.env.APP_PORT;
+var bodyParser = require('body-parser')
+app.use(bodyParser.json);
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 var server = app.listen(port, function(){
 	console.log('Listening to %s', port);
@@ -34,8 +40,13 @@ var Invoices = bookshelf.Model.extend({
 router.route('/invoices')
 	.post(function (req, res){
 		Invoices.forge({req}).save().then(function(model) {
-  		console.log(req);
-			res.json(req);
+      knex('user').insert({amount: req.body.email, callback: req.body.callback, created_at: knex.raw('now()'), updated_at: knex.raw('now()')})
+      .then(function(ret){
+          res.json({ success: true, message: 'ok'/*,ret:ret*/});
+      });
+
+      // console.log(req);
+			// res.json(req);
 		});
 	});
 
