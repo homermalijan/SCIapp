@@ -1,8 +1,11 @@
 "use strict"
+let Promise = require('bluebird');
 
 class InvoiceCreator {
-
-  execute() {
+  execute(params) {
+    if(!params.amount) return Promise.reject();
+    var invoice = new Invoice(params);
+    return Promise.resolve(invoice);
   }
 }
 

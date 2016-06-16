@@ -6,8 +6,7 @@ let _ = require("lodash");
 global.Model = require("./model").Model;
 global.Collection = require("./model").Collection;
 
-
-["services"].forEach(dir => {
+["services", "models"].forEach(dir => {
   let item = requireDirectory(module, `./${dir}`);
   _.merge(global, item);
 });
