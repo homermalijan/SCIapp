@@ -16,7 +16,9 @@
     "knex": "^0.11.5",
     "lodash": "^4.13.1",
     "nodemon": "^1.9.2",
+    "nodenv": "^0.1.0",
     "pg": "^5.1.0",
-    "require-directory": "^2.1.1"
+    "require-directory": "^2.1.1",
+    "soap": "^0.15.0"
   }
 }
