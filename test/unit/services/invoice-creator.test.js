@@ -11,17 +11,35 @@ describe("InvoiceCreator", () => {
   });
   describe("#execute", () => {
     it("returns an invoice object", done => {
-      var params = {};
+    	var params = {
+    		amount: 1
+    	};
       var promise = invoiceCreator.execute(params);
-      console.log(Invoice);
+
       expect(promise).to.eventually.be.instanceof(Invoice).notify(done);
     });
 
-    it("fails when no amount is NULL", done => {
+    it("fails when amount is NULL", done => {
       var params = {};
       var promise = invoiceCreator.execute(params);
       expect(promise).to.eventually.be.rejected.notify(done);
     });
+
+    it("fails when amount is negative", done => {
+    	var params = {
+    		amount: -1
+    	};
+    	var promise = invoiceCreator.execute(params);
+    	expect(promise).to.eventually.be.rejected.notify(done);
+    })
+
+    it("fails when amount is not an instance of float", done => {
+    	var params = {
+    		amount: "pass"
+    	}
+    	var promise = invoiceCreator.execute(params);
+    	expect(promise).to.be.eventually.be.rejected.notify(done);
+    })
   });
 
 });
