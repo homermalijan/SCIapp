@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test node_modules/bin/_mocha --recursive",
+    "db": "node_modules/knex/lib/bin/cli.js",
     "start": "nodemon index.js"
   },
   "author": "",
@@ -20,5 +21,8 @@
     "pg": "^5.1.0",
     "require-directory": "^2.1.1",
     "soap": "^0.15.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3"
   }
 }
