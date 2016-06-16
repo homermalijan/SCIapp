@@ -1,6 +1,6 @@
 describe("InvoiceCreator", () => {
 
-  let invoiceCreator;
+  var invoiceCreator;
 
   beforeEach(() => {
     invoiceCreator = new InvoiceCreator();
