@@ -12,3 +12,11 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
 	return knex.schema.dropTable('invoices')
 };
+
+creat table invoices(
+	id integer INCREMENTS PRIMARY KEY,
+	callback varchar(5);
+	amount float NOT NULL,
+	created_at timestamp NOT NULL DEFAULT now(),
+	updated_at timestamp NOT NULL DEFAULT noW()
+)

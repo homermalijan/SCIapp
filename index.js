@@ -10,8 +10,7 @@ var	router = express.Router();
 var repl = require('repl');
 app.use(router);
 var	port = process.env.APP_PORT;
-
-// var requireDirectory = require('require-directory');
+var requireDirectory = require('require-directory');
 // module.exports = requireDirectory(module);
 
 var bodyParser = require('body-parser')
@@ -25,6 +24,7 @@ var server = app.listen(port, function(){
   var local = repl.start("invoice> ");
 });
 
+
 var knex = require('knex')({
     client: 'postgresql',
     connection: {
@@ -37,7 +37,7 @@ var knex = require('knex')({
 
 var bookshelf = require('bookshelf')(knex);
 
-var Invoices = bookshelf.Model.extend({
+global.Invoice = bookshelf.Model.extend({
 	tableName: 'invoices'
 });
 
@@ -45,21 +45,20 @@ var Invoices = bookshelf.Model.extend({
 
 router.route('/invoices')
 	.post(function (req, res){
-		Invoices.forge({req}).save().then(function(model) {
-      knex('user').insert({amount: req.body.email, callback: req.body.callback, created_at: knex.raw('now()'), updated_at: knex.raw('now()')})
-      .then(function(ret){
-          res.json({ success: true, message: 'ok'/*,ret:ret*/});
-      });
-
-      // console.log(req);
-			// res.json(req);
-		});
+      new Invoice({
+      amount: req.body.amount,
+      callback: req.body.callback
+    }).save().then(function(newRow) {
+        return(newRow.id);
+    }).catch(function(err) {
+        res.send('created!');
+    });
 	});
 
 
 router.route('/invoices/:id')
 	.get(function (req, res){
-		Invoices.forge({id:req.params.id}).fetch()
+		Invoice.forge({id:req.params.id}).fetch()
 			.then(function(i) {
 				if (!i) {
 					console.log('User with id: ', req.params.id, ' not found!');
@@ -75,24 +74,49 @@ router.route('/invoices/:id')
 	})
 
 	.put(function (req, res){
-    var x = req.params.id;
-    let invoice = new Invoices({id: x});
-    invoice.fetch().then(function(inv) {
-      return inv.destroy();
-    })
-    .then(function() {
-      res.send("Ok");
-    })
+		Invoice.forge({id:req.params.id}).fetch()
+			.then(function(i) {
+				if (!i) {
+					console.log('User with id: ', id, ' not found!');
+				} else {
+					Invoice.save({
+					})
+				}
+			})
 	});
 
 router.route('/invoicesdelete/:id')
 	.get(function (req, res){
     var x = req.params.id;
-    let invoice = new Invoices({id: x});
+    let invoice = new Invoice({id: x});
     invoice.fetch().then(function(inv) {
       return inv.destroy();
     })
     .then(function() {
       res.send("Ok");
     })
+    // console.log(invoice);
+    // invoice.destroy().then(function(){
+    //   res.send('ok');
+    // })
+
+    // new Invoice({
+    //   'id': x
+    // }).where({
+    //   'id' : x
+    // }).fetch().then(function(fetchedModel) {
+    //     fetchedModel.destroy();
+    // }).catch(function(err) { });
+		// Invoice.forge({id:req.params.id}).fetch({require: true})
+		// 	.then(function(i) {
+    //   //  new invoice({id: })
+    //     // var x = i.get('id');
+    //     // return knex.raw('DELETE FROM invoices where id=' + x + ';' );
+    //     return
+		// 		//console.log('Successfully delete invoice with id: ', i.get('id'));
+		// })
+		// 	.catch(function(res) {
+		// 		console.log('Error encountered!');
+    //     res.send('cannot find id');
+		// 	})
 	});

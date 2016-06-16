@@ -4,6 +4,4 @@ var knex = require('knex')(config[env]);
 
 module.exports = knex;
 
-
 knex.migrate.latest([config]);
-
