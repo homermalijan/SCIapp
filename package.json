@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test node_modules/bin/_mocha --recursive",
+    "test": "NODE_ENV=test node_modules/mocha/bin/_mocha --recursive",
     "db": "node_modules/knex/lib/bin/cli.js",
     "start": "nodemon index.js"
   },
@@ -23,6 +23,10 @@
     "soap": "^0.15.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "mocha": "^2.5.3",
+    "sinon": "^1.17.4",
+    "sinon-as-promised": "^4.0.0"
   }
 }

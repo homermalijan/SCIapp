@@ -1,14 +1,16 @@
 'use strict'
 
-var dotenv = require('dotenv');
+let dotenv = require('dotenv');
 dotenv.config();
-var db = require('./db');
-var express = require('express');
-var	lodash = require('lodash');
-var	app = express();
+
+let express = require('express');
+let	app = express();
 var	router = express.Router();
+
 var repl = require('repl');
+
 app.use(router);
+
 var	port = process.env.APP_PORT;
 var requireDirectory = require('require-directory');
 // module.exports = requireDirectory(module);
@@ -36,10 +38,6 @@ var knex = require('knex')({
 });
 
 var bookshelf = require('bookshelf')(knex);
-
-global.Invoice = bookshelf.Model.extend({
-	tableName: 'invoices'
-});
 
 router.route('/invoices')
 	.post(function (req, res){
@@ -92,7 +90,7 @@ router.route('/invoices/:id')
 			}
 		})
 	})
-	
+
 	.delete(function (req, res){
     	let invoice = new Invoices({id: req.params.id});
     	invoice.fetch().then(function(inv) {
